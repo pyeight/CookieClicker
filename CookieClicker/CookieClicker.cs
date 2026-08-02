@@ -13,10 +13,8 @@ var clickAmountCost = 5;
 var cookieDisplay = "o";
 var currentIteration = 0;
 
-var menuState = MenuState.Playing;
+var menuState = MenuState.Welcome;
 var selectedUpgrade = SelectedUpgrade.Multiplier;
-
-DrawWelcome();
 
 while (true)
 {
@@ -41,16 +39,30 @@ void HandleInput()
                 ToggleShop();
                 break;
         
-            case ConsoleKey.E:
-                HandleUpgrade();
-                break;
-        
             case ConsoleKey.LeftArrow:
                 SwitchUpgrade("left");
                 break;
         
             case ConsoleKey.RightArrow:
                 SwitchUpgrade("right");
+                break;
+            
+            case ConsoleKey.Escape:
+                if (menuState != MenuState.Shop) return;
+                menuState = MenuState.Playing;
+                break;
+            
+            case ConsoleKey.Enter:
+                switch (menuState)
+                {
+                    case MenuState.Welcome:
+                        menuState = MenuState.Playing;
+                        break;
+                    
+                    case MenuState.Shop:
+                        HandleUpgrade();
+                        break;
+                }
                 break;
         }
     }
@@ -147,6 +159,10 @@ void Draw()
     // Console.WriteLine("Current iteration: " + currentIteration);
     switch (menuState)
     {
+        case MenuState.Welcome:
+            DrawWelcome();
+            break;
+        
         case MenuState.Playing:
             DrawPlaying();
             break;
@@ -155,20 +171,38 @@ void Draw()
             DrawShop();
             break;
     }
+
+    DrawKeymap();
 }
 
 void DrawWelcome()
 {
     Console.WriteLine("Welcome to Cookie Clicker!");
-    Console.WriteLine("Press Q to click ze cookie");
     
     DrawCookie("welcome");
 }
 
+void DrawKeymap()
+{
+    Console.WriteLine("");
+    switch (menuState)
+    {
+        case  MenuState.Welcome:
+            Console.WriteLine("Press Enter to start the game");
+            break;
+        
+        case MenuState.Playing:
+            Console.WriteLine("Q - Click Cookie,  C - Enter Shop");
+            break;
+        
+        case MenuState.Shop:
+            Console.WriteLine("E - Buy Upgrade,  Arrows - Select Upgrade,  C/ESC - Leave Shoop");
+            break;
+    }
+}
+
 void DrawPlaying()
 {
-    Console.WriteLine("Q - Click Cookie");
-    Console.WriteLine("C - Enter Shop");
     Console.WriteLine("Current Cookies: " +  cookies);
     Console.WriteLine("Current Cookies Per Click: " +  cookiesPerClick);
     
@@ -177,12 +211,11 @@ void DrawPlaying()
 
 void DrawShop()
 {
-    Console.WriteLine("C - Leave Shop");
-    Console.WriteLine("E - Buy Upgrade");
-    Console.WriteLine("<- Switch Upgrade ->");
+    Console.WriteLine("The Upgrade Shop");
+    Console.WriteLine("");
     Console.WriteLine("You have " + cookies + " cookies to spend!");
     Console.WriteLine("");
-
+    Console.WriteLine("<- Switch Upgrade ->");
     switch (selectedUpgrade)
     {
         case SelectedUpgrade.Multiplier:
@@ -193,30 +226,31 @@ void DrawShop()
             DrawClickAmountUpgrade();
             break;
     }
+    Console.WriteLine("");
+    Console.WriteLine("Do you want to upgrade?");
 }
 
 void DrawMultiplierUpgrade()
 {
-    Console.WriteLine("Selected Upgrade: Multiplier");
-    Console.WriteLine("Upgrade Level: " + multiplierLevel);
+    Console.WriteLine("Multiplier Upgrade");
+    Console.WriteLine("Current Level: " + multiplierLevel);
     Console.WriteLine("Current Multiplier: " + multiplier + "x");
     Console.WriteLine("Cost for upgrade: " +  multiplierCost);
-    Console.WriteLine("Do you wanna upgrade?");
 }
 
 void DrawClickAmountUpgrade()
 {
-    Console.WriteLine("Selected Upgrade: Click Amount");
-    Console.WriteLine("Upgrade Level: " + clickAmountLevel);
+    Console.WriteLine("Click Amount Upgrade");
+    Console.WriteLine("Current Level: " + clickAmountLevel);
     Console.WriteLine("Current Click Amount: " + clickAmount);
     Console.WriteLine("Cost for upgrade: " +  clickAmountCost);
-    Console.WriteLine("Do you wanna upgrade?");
 }
 
 void DrawCookie(string type)
 {
     var upgradesPerSide = multiplierLevel / 2;
 
+    var spacer = "      ";
     var leftSide = "";
     var rightSide = "";
     
@@ -240,8 +274,7 @@ void DrawCookie(string type)
     }
     
     Console.WriteLine("");
-    Console.WriteLine(leftSide + cookieDisplay + rightSide);
-    Console.WriteLine("");
+    Console.WriteLine(spacer + leftSide + cookieDisplay + rightSide);
 }
 
 void AnimateCookie(string type)
@@ -273,8 +306,9 @@ void AnimateCookie(string type)
 
 enum MenuState : byte
 {
-    Playing = 1,
-    Shop = 2
+    Welcome = 1,
+    Playing = 2,
+    Shop = 3
 }
 
 enum SelectedUpgrade : byte
