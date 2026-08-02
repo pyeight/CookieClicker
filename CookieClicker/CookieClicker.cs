@@ -27,31 +27,32 @@ while (true)
 
 void HandleInput()
 {
-    if (!Console.KeyAvailable) return;
-    
-    var key = Console.ReadKey();
-
-    switch (key.Key)
+    while (Console.KeyAvailable)
     {
-        case ConsoleKey.Q:
-            HandleClick();
-            break;
+        var key = Console.ReadKey();
+
+        switch (key.Key)
+        {
+            case ConsoleKey.Q:
+                HandleClick();
+                break;
         
-        case ConsoleKey.C:
-            ToggleShop();
-            break;
+            case ConsoleKey.C:
+                ToggleShop();
+                break;
         
-        case ConsoleKey.E:
-            HandleUpgrade();
-            break;
+            case ConsoleKey.E:
+                HandleUpgrade();
+                break;
         
-        case ConsoleKey.LeftArrow:
-            SwitchUpgrade("left");
-            break;
+            case ConsoleKey.LeftArrow:
+                SwitchUpgrade("left");
+                break;
         
-        case ConsoleKey.RightArrow:
-            SwitchUpgrade("right");
-            break;
+            case ConsoleKey.RightArrow:
+                SwitchUpgrade("right");
+                break;
+        }
     }
 }
 
