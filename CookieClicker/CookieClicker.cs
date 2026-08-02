@@ -42,11 +42,7 @@ void HandleInput()
             break;
         
         case ConsoleKey.E:
-            HandleUpgrade("multiplier");
-            break;
-        
-        case ConsoleKey.R:
-            HandleUpgrade("clickAmount");
+            HandleUpgrade();
             break;
         
         case ConsoleKey.LeftArrow:
@@ -65,13 +61,13 @@ void HandleClick()
     cookies += cookiesPerClick;
 }
 
-void HandleUpgrade(string type)
+void HandleUpgrade()
 {
     if (menuState != MenuState.Shop) return;
     
-    switch (type)
+    switch (selectedUpgrade)
     {
-        case "multiplier":
+        case SelectedUpgrade.Multiplier:
             if (cookies < multiplierCost) return;
     
             cookies -= multiplierCost;
@@ -83,7 +79,7 @@ void HandleUpgrade(string type)
             multiplierCost *= 2;
             break;
         
-        case "clickAmount":
+        case SelectedUpgrade.ClickAmount:
             if (cookies < clickAmountCost) return;
             
             cookies -= clickAmountCost;
